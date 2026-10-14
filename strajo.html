@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Strajo — Pitch D2E</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400..700;1,400..700&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&amp;display=swap">
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0D1411; overflow: hidden; }
+#viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+#stage { position: relative; flex: none; width: 1920px; height: 1080px; overflow: hidden; transform-origin: center center; }
+
+/* Slides : canevas fixe 1920×1080, un seul visible à la fois */
+#stage > section { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden;
+  opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s; }
+#stage > section.current { opacity: 1; visibility: visible; transition: opacity .45s ease, visibility 0s; }
+section h1, section h2, section h3, section p, section ul, section ol, section li { margin: 0; }
+section ul, section ol { padding-left: 1.1em; }
+section hr { margin: 0; border: 0; height: 0; }
+section aside { display: none; }
+
+/* Éléments propres au format Slides */
+x-shape, x-icon { display: block; }
+x-shape[kind=ellipse] { border-radius: 50%; }
+x-shape[kind=diamond] { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+x-shape[kind=arrow-right] { clip-path: polygon(0 30%, 60% 30%, 60% 0, 100% 50%, 60% 100%, 60% 70%, 0 70%); }
+x-shape[kind=arrow-left] { clip-path: polygon(100% 30%, 40% 30%, 40% 0, 0 50%, 40% 100%, 40% 70%, 100% 70%); }
+x-shape[kind=arrow-up] { clip-path: polygon(30% 100%, 30% 40%, 0 40%, 50% 0, 100% 40%, 70% 40%, 70% 100%); }
+x-shape[kind=arrow-down] { clip-path: polygon(30% 0, 30% 60%, 0 60%, 50% 100%, 100% 60%, 70% 60%, 70% 0); }
+x-icon svg { display: block; width: 100%; height: 100%; }
+iframe.x-embed { border: 0; background: transparent; color-scheme: light; pointer-events: none; }
+
+/* Apparitions (data-build-in) — translate/scale se composent avec le transform inline */
+[data-build-in] { transition: opacity .55s ease, translate .65s cubic-bezier(.2,.75,.25,1), scale .55s cubic-bezier(.3,1.45,.55,1); }
+[data-build-in].pre { opacity: 0; }
+[data-build-in].pre[data-fx=rise] { translate: 0 48px; }
+[data-build-in].pre[data-fx=drop] { translate: 0 -48px; }
+[data-build-in].pre[data-fx=left] { translate: -72px 0; }
+[data-build-in].pre[data-fx=right] { translate: 72px 0; }
+[data-build-in].pre[data-fx=scale] { scale: .85; }
+[data-build-in].pre[data-fx=pop] { scale: .55; }
+section.instant [data-build-in] { transition: none !important; }
+
+/* Interface du lecteur */
+#hud { position: fixed; right: 16px; bottom: 12px; padding: 6px 10px; border-radius: 8px; background: rgba(13,20,17,.8);
+  font: 14px/1.2 system-ui, sans-serif; color: #BFC9BC; opacity: 0; transition: opacity .3s; pointer-events: none; }
+body.hud #hud { opacity: 1; }
+#notes { position: fixed; left: 0; right: 0; bottom: 0; height: 30vh; overflow: auto; padding: 14px 24px 20px;
+  background: #0A100D; color: #E8EFE9; font: 19px/1.55 system-ui, sans-serif; border-top: 1px solid #2C3B33; display: none; }
+body.notes #notes { display: block; }
+body.notes #viewport { bottom: 30vh; }
+#notes .t { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #E8914A; margin-bottom: 6px; }
+
+/* Impression / PDF : toutes les slides, entièrement construites */
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  #viewport { position: static; display: block; }
+  #stage { transform: none !important; width: 1920px; height: auto; overflow: visible; }
+  #stage > section { position: relative; opacity: 1 !important; visibility: visible !important; transition: none; break-after: page; }
+  [data-build-in].pre { opacity: 1 !important; translate: none !important; scale: none !important; }
+  #hud, #notes { display: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+<section id="cover" data-transition="fade" style="background:#17231D;color:#F4EFE4;font-family:'DM Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column">
+<svg aria-label="Sillons d’un champ qui convergent vers un soleil levant" style="position:absolute;left:1120px;top:0px;width:800px;height:1080px" width="800" height="1080" viewBox="0 0 800 1080" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="800" height="1080" fill="#17231D"/>
+<path d="M 510 300 A 110 110 0 0 1 730 300 Z" fill="#D9732B"/>
+<line x1="0" y1="300" x2="800" y2="300" stroke="#3A4D42" stroke-width="2"/>
+<g fill="none" stroke="#2E4237" stroke-width="3">
+<line x1="-680" y1="1080" x2="494" y2="300"/>
+<line x1="-505" y1="1080" x2="515" y2="300"/>
+<line x1="-330" y1="1080" x2="536" y2="300"/>
+<line x1="-155" y1="1080" x2="557" y2="300"/>
+<line x1="20" y1="1080" x2="578" y2="300"/>
+<line x1="195" y1="1080" x2="599" y2="300"/>
+<line x1="545" y1="1080" x2="641" y2="300"/>
+<line x1="720" y1="1080" x2="662" y2="300"/>
+<line x1="895" y1="1080" x2="683" y2="300"/>
+<line x1="1070" y1="1080" x2="704" y2="300"/>
+<line x1="1245" y1="1080" x2="725" y2="300"/>
+<line x1="1420" y1="1080" x2="746" y2="300"/>
+</g>
+<defs><linearGradient id="fadeL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#17231D"/><stop offset="1" stop-color="#17231D" stop-opacity="0"/></linearGradient></defs>
+<rect x="0" y="0" width="280" height="1080" fill="url(#fadeL)"/>
+<line x1="370" y1="1080" x2="620" y2="300" stroke="#D9732B" stroke-width="4" stroke-dasharray="14 12"/>
+<circle r="9" fill="#E8914A"><animateMotion dur="5s" repeatCount="indefinite" path="M 370 1080 L 620 300"/></circle>
+</svg>
+<p data-build-in="fade 1 auto" style="position:absolute;left:128px;top:300px;width:960px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#E8914A">Candidature D2E · Pépite ECRIN · 2026</p>
+<h1 data-build-in="rise 2 auto" style="position:absolute;left:128px;top:350px;width:960px;font-family:'Fraunces', Georgia, serif;font-size:240px;font-weight:600;line-height:1;letter-spacing:-6px;color:#F4EFE4">Strajo</h1>
+<p data-build-in="fade 3 auto" style="position:absolute;left:128px;top:640px;width:960px;font-family:'Fraunces', Georgia, serif;font-size:44px;font-style:italic;line-height:1.2;color:#F4EFE4">L’administratif agricole, repris en main.</p>
+<p data-build-in="fade 4 auto" style="position:absolute;left:128px;top:716px;width:900px;font-size:32px;line-height:1.4;color:#BFC9BC">Un assistant IA pour les secrétaires d’exploitation et les agriculteurs.</p>
+<p data-build-in="fade 5 auto" style="position:absolute;left:128px;top:880px;width:960px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#BFC9BC">[Prénom Nom] · [Prénom Nom] — comité d’engagement du [date]</p>
+<aside>~15 s. Bonjour, je suis [prénom], et voici Strajo : l’administratif agricole, repris en main. En sept minutes, je vais vous montrer le problème, ce qu’on a appris sur le terrain, ce que fait Strajo, et pourquoi le D2E est la bonne étape pour nous maintenant.</aside>
+</section>
+<section id="constat" data-transition="fade" style="background:#F4EFE4;color:#17231D;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A84E14">Le constat</p>
+<p data-build-in="rise 1 auto" style="position:absolute;left:128px;top:200px;width:520px;font-family:'Fraunces', Georgia, serif;font-size:240px;font-weight:600;line-height:1;letter-spacing:-4px;color:#A84E14;white-space:nowrap">9 h</p>
+<h2 data-build-in="fade 2 auto" style="position:absolute;left:680px;top:236px;width:1112px;font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#17231D">par semaine, consacrées à l’administratif.</h2>
+<p data-build-in="fade 3 auto" style="position:absolute;left:680px;top:420px;width:1112px;font-size:32px;line-height:1.4;color:#4F5A52">C’est ce que déclare en moyenne un agriculteur, sur des semaines de près de 60 h.</p>
+<p data-build-in="fade 4 auto" style="position:absolute;left:128px;top:572px;width:800px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#4F5A52">Une semaine de travail</p>
+<div data-build-in="fade 4 auto" style="position:absolute;left:128px;top:620px;width:1664px;height:80px;background:#E2D8C3;border-radius:16px"></div>
+<div data-build-in="left 5 auto" style="position:absolute;left:128px;top:620px;width:250px;height:80px;background:#D9732B;border-radius:16px 0px 0px 16px"></div>
+<p data-build-in="fade 6 auto" style="position:absolute;left:128px;top:620px;width:250px;height:80px;font-size:32px;font-weight:700;line-height:2.5;text-align:center;color:#17231D">≈ 15 %</p>
+<p data-build-in="fade 6 auto" style="position:absolute;left:410px;top:620px;width:1360px;height:80px;font-size:24px;line-height:3.33;color:#4F5A52">le reste : le métier — cultures, élevage, vente, chantiers</p>
+<p data-build-in="fade 7" style="position:absolute;left:128px;top:776px;width:1664px;font-family:'Fraunces', Georgia, serif;font-size:44px;font-style:italic;line-height:1.25;color:#17231D">Et quand une exploitation décroche, c’est souvent par l’administratif que ça commence.</p>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#4F5A52">Source : baromètre agricole Terre-net / BVA</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">02</p>
+</div>
+<aside>~40 s. Neuf heures. C’est le temps qu’un agriculteur déclare passer chaque semaine sur l’administratif : déclarations, aides PAC, MSA, factures, mails. Sur des semaines de près de soixante heures, ça fait environ 15 % de son temps, pris sur le métier. [clic] Et quand une exploitation décroche, c’est très souvent par là que ça commence : une aide pas versée, une cotisation mal ajustée, une pièce jamais envoyée.</aside>
+</section>
+<section id="probleme" data-transition="fade" style="background:#F4EFE4;color:#17231D;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A84E14">Le problème</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#17231D">Les démarches se perdent dans les mails</h2>
+<p data-build-in="pop 1 auto" style="position:absolute;left:140px;top:400px;width:482px;padding:14px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 8px 20px rgba(23,35,29,0.12);transform:rotate(-3deg)">Dossier PAC — pièce manquante</p>
+<p data-build-in="pop 2 auto" style="position:absolute;left:470px;top:488px;width:395px;padding:14px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 8px 20px rgba(23,35,29,0.12);transform:rotate(2deg)">Relance fournisseur n°3</p>
+<p data-build-in="pop 3 auto" style="position:absolute;left:180px;top:576px;width:309px;padding:14px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 8px 20px rgba(23,35,29,0.12);transform:rotate(1.5deg)">Attestation MSA ?</p>
+<p data-build-in="pop 4 auto" style="position:absolute;left:540px;top:652px;width:309px;padding:14px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 8px 20px rgba(23,35,29,0.12);transform:rotate(-2deg)">Facture à valider</p>
+<p data-build-in="pop 5 auto" style="position:absolute;left:150px;top:736px;width:251px;padding:14px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 8px 20px rgba(23,35,29,0.12);transform:rotate(-1deg)">Mandat expiré</p>
+<p data-build-in="pop 6 auto" style="position:absolute;left:430px;top:812px;width:424px;padding:14px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 8px 20px rgba(23,35,29,0.12);transform:rotate(2.5deg)">Chorus Pro : accès bloqué</p>
+<div data-build-in="rise 7 auto" style="position:absolute;left:960px;top:400px;width:832px;display:flex;flex-direction:column;gap:6px;padding:28px 32px;background:#FBF8F1;border-left:6px solid #D9732B;border-radius:12px">
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:32px;font-weight:600;line-height:1.2;color:#17231D">Où en est la démarche ?</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">Ni l’agriculteur ni la secrétaire ne le savent vraiment.</p>
+</div>
+<div data-build-in="rise 8 auto" style="position:absolute;left:960px;top:556px;width:832px;display:flex;flex-direction:column;gap:6px;padding:28px 32px;background:#FBF8F1;border-left:6px solid #D9732B;border-radius:12px">
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:32px;font-weight:600;line-height:1.2;color:#17231D">Pièces manquantes, relances oubliées</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">Et ce sont des aides PAC ou des cotisations qui dérapent.</p>
+</div>
+<div data-build-in="rise 9 auto" style="position:absolute;left:960px;top:712px;width:832px;display:flex;flex-direction:column;gap:6px;padding:28px 32px;background:#FBF8F1;border-left:6px solid #D9732B;border-radius:12px">
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:32px;font-weight:600;line-height:1.2;color:#17231D">Un contexte à reconstruire</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">À chaque exploitation, à chaque reprise de dossier.</p>
+</div>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#4F5A52">Strajo · Candidature D2E 2026</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">03</p>
+</div>
+<aside>~40 s. Concrètement, l’administratif agricole, c’est une pluie de petites choses : une pièce manquante pour un dossier PAC, une attestation MSA, une facture à valider, un mandat expiré, un accès Chorus Pro bloqué. Tout ça arrive par mail, mélangé. Résultat : personne ne sait vraiment où en est la démarche. Les pièces manquent, les relances s’oublient, et ce sont des aides ou des cotisations qui dérapent. Et la secrétaire qui suit plusieurs exploitations doit reconstruire le contexte à chaque fois.</aside>
+</section>
+<section id="msa" data-transition="fade" style="background:#17231D;color:#F4EFE4;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#E8914A">La preuve institutionnelle</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#F4EFE4">Un besoin que la MSA finance déjà</h2>
+<p style="font-size:32px;line-height:1.4;color:#BFC9BC">Avec l’aide au répit administratif, une assistante intervient sur l’exploitation quand la surcharge administrative menace la santé de l’exploitant.</p>
+<div data-build-in="rise 1 auto" style="position:absolute;left:128px;top:448px;width:440px;display:flex;flex-direction:column;gap:12px;padding:24px 0px 0px 0px;border-top:3px solid #E8914A">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:120px;font-weight:600;line-height:1;color:#E8914A;white-space:nowrap">1 500 €</p>
+<p style="font-size:32px;line-height:1.3;color:#BFC9BC">maximum par exploitant, et jusqu’à 49 h d’aide sur un an</p>
+</div>
+<div data-build-in="rise 2 auto" style="position:absolute;left:600px;top:448px;width:380px;display:flex;flex-direction:column;gap:12px;padding:24px 0px 0px 0px;border-top:3px solid #E8914A">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:120px;font-weight:600;line-height:1;color:#E8914A">564</p>
+<p style="font-size:32px;line-height:1.3;color:#BFC9BC">bénéficiaires en France en 2025</p>
+</div>
+<div data-build-in="rise 3 auto" style="position:absolute;left:1012px;top:448px;width:380px;display:flex;flex-direction:column;gap:12px;padding:24px 0px 0px 0px;border-top:3px solid #E8914A">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:120px;font-weight:600;line-height:1;color:#E8914A">33</p>
+<p style="font-size:32px;line-height:1.3;color:#BFC9BC">caisses MSA engagées</p>
+</div>
+<div data-build-in="rise 4 auto" style="position:absolute;left:1424px;top:448px;width:368px;display:flex;flex-direction:column;gap:12px;padding:24px 0px 0px 0px;border-top:3px solid #E8914A">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:120px;font-weight:600;line-height:1;color:#E8914A">2026</p>
+<p style="font-size:32px;line-height:1.3;color:#BFC9BC">dispositif pérennisé</p>
+</div>
+<p data-build-in="fade 5" style="position:absolute;left:128px;top:770px;width:1664px;font-family:'Fraunces', Georgia, serif;font-size:44px;font-style:italic;line-height:1.25;color:#F4EFE4">Le besoin est reconnu. Mais l’aide est ponctuelle : après le rattrapage, il faut tenir dans la durée.</p>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#BFC9BC">Source : MSA, Bimsa — données 2025</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#BFC9BC">04</p>
+</div>
+<aside>~40 s. Ce n’est pas seulement nous qui le disons. Depuis 2023, la MSA finance une aide au répit administratif : quand la surcharge administrative met en danger la santé d’un exploitant, une assistante vient sur l’exploitation pour remettre les choses à plat. Jusqu’à 1 500 euros et 49 heures sur un an, 564 bénéficiaires en 2025, 33 caisses engagées, et le dispositif est pérennisé en 2026. [clic] Donc le besoin est reconnu institutionnellement. Mais cette aide est ponctuelle : une fois le retard rattrapé, rien n’empêche la rechute. C’est exactement là que Strajo se place : tenir dans la durée.</aside>
+</section>
+<section id="terrain" data-transition="fade" style="background:#F4EFE4;color:#17231D;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A84E14">Le terrain</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#17231D">Ce que le terrain nous a appris</h2>
+<div data-build-in="rise 1 auto" style="position:absolute;left:128px;top:336px;width:386px;display:flex;flex-direction:column;gap:4px">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#A84E14">14</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">entretiens réalisés</p>
+</div>
+<div data-build-in="rise 2 auto" style="position:absolute;left:554px;top:336px;width:386px;display:flex;flex-direction:column;gap:4px">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#A84E14">5</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">rendez-vous planifiés</p>
+</div>
+<div data-build-in="rise 3 auto" style="position:absolute;left:980px;top:336px;width:386px;display:flex;flex-direction:column;gap:4px">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#A84E14">5</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">échanges en cours</p>
+</div>
+<div data-build-in="rise 4 auto" style="position:absolute;left:1406px;top:336px;width:386px;display:flex;flex-direction:column;gap:4px">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#A84E14">99+</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">secrétaires et exploitants identifiés</p>
+</div>
+<hr style="position:absolute;left:128px;top:500px;width:1664px;border-top:2px solid #D8CDB5">
+<p data-build-in="fade 5 auto" style="position:absolute;left:128px;top:548px;width:740px;font-family:'Fraunces', Georgia, serif;font-size:44px;font-style:italic;line-height:1.2;color:#17231D">« On ne sait plus qui doit gérer quoi. »</p>
+<p data-build-in="fade 5 auto" style="position:absolute;left:128px;top:672px;width:740px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#A84E14">— Secrétaire indépendante, sept. 2026</p>
+<x-icon data-build-in="left 6 auto" name="Clock" style="position:absolute;left:960px;top:554px;width:44px;height:44px;color:#D9732B"></x-icon>
+<p data-build-in="left 6 auto" style="position:absolute;left:1024px;top:548px;width:768px;font-size:32px;line-height:1.35;color:#17231D">Les urgences, ce sont le personnel et les aides — pas le classement.</p>
+<x-icon data-build-in="left 7 auto" name="Lock" style="position:absolute;left:960px;top:664px;width:44px;height:44px;color:#D9732B"></x-icon>
+<p data-build-in="left 7 auto" style="position:absolute;left:1024px;top:658px;width:768px;font-size:32px;line-height:1.35;color:#17231D">Ce qui bloque : les habilitations, les mandats, l’accès aux portails.</p>
+<x-icon data-build-in="left 8 auto" name="ThumbsUp" style="position:absolute;left:960px;top:774px;width:44px;height:44px;color:#D9732B"></x-icon>
+<p data-build-in="left 8 auto" style="position:absolute;left:1024px;top:768px;width:768px;font-size:32px;line-height:1.35;color:#17231D">Une secrétaire envisage déjà de refacturer l’outil à ses clients.</p>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#4F5A52">Source : notre pipeline terrain, au 14 octobre 2026</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">05</p>
+</div>
+<aside>~45 s. Avant de coder, on est allés voir le terrain. Quatorze entretiens réalisés, surtout avec des secrétaires indépendantes qui travaillent pour des viticulteurs, des éleveurs ou des céréaliers, et aussi avec la MSA. Cinq rendez-vous sont déjà planifiés, cinq échanges sont en cours, et on a identifié plus d’une centaine de contacts. Ce qu’on a entendu : « On ne sait plus qui doit gérer quoi. » Les vraies urgences, ce sont le personnel et les aides, pas le rangement. Ce qui bloque, ce sont les habilitations, les mandats et l’accès aux portails. Et un signal fort : une secrétaire nous a dit qu’elle refacturerait l’outil en frais à ses clients.</aside>
+</section>
+<section id="solution" data-transition="fade" style="background:#D9732B;color:#17231D;font-family:'DM Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#17231D">La solution</p>
+<h1 data-build-in="rise 1 auto" style="position:absolute;left:128px;top:200px;width:1664px;font-family:'Fraunces', Georgia, serif;font-size:120px;font-weight:600;line-height:1.05;letter-spacing:-2px;color:#17231D">Strajo organise le travail par procédure, pas par boîte mail.</h1>
+<p data-build-in="fade 2 auto" style="position:absolute;left:128px;top:610px;width:1500px;font-size:44px;line-height:1.25;color:#17231D">Un assistant IA qui prend en charge l’administratif de bout en bout. L’humain garde la validation.</p>
+<p data-build-in="fade 3 auto" style="position:absolute;left:128px;top:768px;width:900px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#17231D">Une procédure, c’est :</p>
+<p data-build-in="pop 4 auto" style="position:absolute;left:128px;top:812px;width:222px;padding:12px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#F4EFE4;background:#17231D;border-radius:999px">Un objectif</p>
+<p data-build-in="pop 5 auto" style="position:absolute;left:370px;top:812px;width:208px;padding:12px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#F4EFE4;background:#17231D;border-radius:999px">Des pièces</p>
+<p data-build-in="pop 6 auto" style="position:absolute;left:598px;top:812px;width:237px;padding:12px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#F4EFE4;background:#17231D;border-radius:999px">Des attentes</p>
+<p data-build-in="pop 7 auto" style="position:absolute;left:855px;top:812px;width:251px;padding:12px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#F4EFE4;background:#17231D;border-radius:999px">Qui doit agir</p>
+<p data-build-in="pop 8 auto" style="position:absolute;left:1126px;top:812px;width:366px;padding:12px 24px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#F4EFE4;background:#17231D;border-radius:999px">La preuve du résultat</p>
+<aside>~30 s. D’où Strajo. Notre idée centrale : organiser le travail par procédure, pas par boîte mail. Un mail, une pièce ou une échéance ne sont que des éléments ; ce qui compte, c’est la démarche à faire aboutir. Pour chaque procédure, Strajo garde l’objectif, les pièces, les attentes, qui doit faire le prochain geste, et la preuve que c’est réglé. L’IA prend en charge le travail de bout en bout, mais les envois, les validations de pièces et les clôtures restent validés par un humain.</aside>
+</section>
+<section id="boucle" data-transition="fade" style="background:#F4EFE4;color:#17231D;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A84E14">Le parcours de référence</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#17231D">Une pièce manquante, de bout en bout</h2>
+<svg data-build-in="fade 1 auto" aria-label="Cycle en six étapes avec un point qui en fait le tour" style="position:absolute;left:330px;top:420px;width:460px;height:460px" width="460" height="460" viewBox="0 0 460 460" xmlns="http://www.w3.org/2000/svg">
+<circle cx="230" cy="230" r="210" fill="none" stroke="#CDBFA3" stroke-width="4" stroke-dasharray="2 14" stroke-linecap="round"/>
+<circle r="12" fill="#D9732B"><animateMotion dur="9s" repeatCount="indefinite" path="M 230 20 A 210 210 0 1 1 229.9 20"/></circle>
+</svg>
+<p data-build-in="fade 8 auto" style="position:absolute;left:430px;top:608px;width:260px;font-family:'Fraunces', Georgia, serif;font-size:32px;font-style:italic;line-height:1.3;text-align:center;color:#4F5A52">et la méthode devient réutilisable</p>
+<x-shape data-build-in="pop 2 auto" kind="ellipse" style="position:absolute;left:518px;top:398px;width:84px;height:84px;background:#17231D"></x-shape>
+<p data-build-in="pop 2 auto" style="position:absolute;left:518px;top:398px;width:84px;height:84px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;line-height:2.625;text-align:center;color:#F4EFE4">1</p>
+<p data-build-in="fade 2 auto" style="position:absolute;left:616px;top:384px;width:240px;font-size:32px;font-weight:600;line-height:1.35;color:#17231D">Demander</p>
+<x-shape data-build-in="pop 3 auto" kind="ellipse" style="position:absolute;left:700px;top:503px;width:84px;height:84px;background:#17231D"></x-shape>
+<p data-build-in="pop 3 auto" style="position:absolute;left:700px;top:503px;width:84px;height:84px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;line-height:2.625;text-align:center;color:#F4EFE4">2</p>
+<p data-build-in="fade 3 auto" style="position:absolute;left:800px;top:523px;width:180px;font-size:32px;font-weight:600;line-height:1.35;color:#17231D">Suivre</p>
+<x-shape data-build-in="pop 4 auto" kind="ellipse" style="position:absolute;left:700px;top:713px;width:84px;height:84px;background:#17231D"></x-shape>
+<p data-build-in="pop 4 auto" style="position:absolute;left:700px;top:713px;width:84px;height:84px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;line-height:2.625;text-align:center;color:#F4EFE4">3</p>
+<p data-build-in="fade 4 auto" style="position:absolute;left:800px;top:733px;width:180px;font-size:32px;font-weight:600;line-height:1.35;color:#17231D">Recevoir</p>
+<x-shape data-build-in="pop 5 auto" kind="ellipse" style="position:absolute;left:518px;top:818px;width:84px;height:84px;background:#17231D"></x-shape>
+<p data-build-in="pop 5 auto" style="position:absolute;left:518px;top:818px;width:84px;height:84px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;line-height:2.625;text-align:center;color:#F4EFE4">4</p>
+<p data-build-in="fade 5 auto" style="position:absolute;left:616px;top:866px;width:240px;font-size:32px;font-weight:600;line-height:1.35;color:#17231D">Contrôler</p>
+<x-shape data-build-in="pop 6 auto" kind="ellipse" style="position:absolute;left:336px;top:713px;width:84px;height:84px;background:#17231D"></x-shape>
+<p data-build-in="pop 6 auto" style="position:absolute;left:336px;top:713px;width:84px;height:84px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;line-height:2.625;text-align:center;color:#F4EFE4">5</p>
+<p data-build-in="fade 6 auto" style="position:absolute;left:128px;top:733px;width:192px;font-size:32px;font-weight:600;line-height:1.35;text-align:right;color:#17231D">Reprendre</p>
+<x-shape data-build-in="pop 7 auto" kind="ellipse" style="position:absolute;left:336px;top:503px;width:84px;height:84px;background:#2F6B47"></x-shape>
+<p data-build-in="pop 7 auto" style="position:absolute;left:336px;top:503px;width:84px;height:84px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:32px;font-weight:600;line-height:2.625;text-align:center;color:#F4EFE4">6</p>
+<p data-build-in="fade 7 auto" style="position:absolute;left:128px;top:523px;width:192px;font-size:32px;font-weight:600;line-height:1.35;text-align:right;color:#17231D">Constater</p>
+<iframe class="x-embed" style="position:absolute;left:1000px;top:352px;width:792px;height:560px" sandbox="allow-scripts" scrolling="no" srcdoc="&lt;!doctype html&gt;&lt;html&gt;&lt;head&gt;&lt;meta charset=&quot;utf-8&quot;&gt;&lt;/head&gt;&lt;body&gt;
+&lt;style&gt;
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:transparent;overflow:hidden}
+body{font-family:system-ui,-apple-system,&quot;Segoe UI&quot;,Roboto,Ubuntu,&quot;Helvetica Neue&quot;,Arial,sans-serif;color:#17231D}
+.card{position:absolute;inset:0;background:#FBF8F1;border:2px solid #DDD2BC;border-radius:24px;padding:28px 32px}
+.head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;padding-bottom:18px;border-bottom:2px solid #E9E1CF}
+.k{font:600 24px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:.06em;text-transform:uppercase;color:#A84E14}
+.t{font-size:30px;font-weight:700;margin-top:6px;line-height:1.2}
+.n{font-size:24px;color:#4F5A52;margin-top:6px}
+.n b{color:#17231D}
+.chip{flex:none;font-size:24px;font-weight:700;padding:8px 18px;border-radius:999px;background:#E9E1CF;color:#17231D;white-space:nowrap;transition:background .4s,color .4s}
+.chip.wait{background:#F6D9BE;color:#7A3A0F}
+.chip.ok{background:#2F6B47;color:#F4EFE4}
+ol{list-style:none;margin-top:18px;display:flex;flex-direction:column;gap:12px}
+li{display:flex;gap:14px;align-items:center;font-size:24px;line-height:1.25;opacity:.2;transition:opacity .5s}
+li.on{opacity:1}
+li i{flex:none;width:40px;height:40px;border-radius:50%;background:#E9E1CF;color:#17231D;font:700 24px/40px ui-monospace,Menlo,Consolas,monospace;text-align:center;font-style:normal;transition:background .4s,color .4s}
+li.on i{background:#17231D;color:#F4EFE4}
+li.cur i{background:#D9732B;color:#17231D}
+li.last.on i{background:#2F6B47;color:#F4EFE4}
+li span{color:#4F5A52}
+&lt;/style&gt;
+&lt;div class=&quot;card&quot;&gt;
+&lt;div class=&quot;head&quot;&gt;&lt;div&gt;&lt;p class=&quot;k&quot;&gt;Procédure · exemple&lt;/p&gt;&lt;p class=&quot;t&quot;&gt;Aide PAC 2026 — attestation MSA&lt;/p&gt;&lt;p class=&quot;n&quot;&gt;Prochain mouvement : &lt;b id=&quot;who&quot;&gt;Secrétaire&lt;/b&gt;&lt;/p&gt;&lt;/div&gt;&lt;p class=&quot;chip&quot; id=&quot;chip&quot;&gt;À demander&lt;/p&gt;&lt;/div&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;i&gt;1&lt;/i&gt;&lt;p&gt;&lt;b&gt;Demander&lt;/b&gt; &lt;span&gt;· mail préparé par Strajo, validé, envoyé&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i&gt;2&lt;/i&gt;&lt;p&gt;&lt;b&gt;Suivre&lt;/b&gt; &lt;span&gt;· attente suivie, relance prête à J+5&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i&gt;3&lt;/i&gt;&lt;p&gt;&lt;b&gt;Recevoir&lt;/b&gt; &lt;span&gt;· attestation_msa.pdf reçue et rangée&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i&gt;4&lt;/i&gt;&lt;p&gt;&lt;b&gt;Contrôler&lt;/b&gt; &lt;span&gt;· pièce conforme au besoin du dossier&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;i&gt;5&lt;/i&gt;&lt;p&gt;&lt;b&gt;Reprendre&lt;/b&gt; &lt;span&gt;· dossier complété, procédure relancée&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;li class=&quot;last&quot;&gt;&lt;i&gt;6&lt;/i&gt;&lt;p&gt;&lt;b&gt;Constater&lt;/b&gt; &lt;span&gt;· résultat vérifié, récap envoyé&lt;/span&gt;&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/div&gt;
+&lt;script&gt;
+var S=[[&quot;En attente&quot;,&quot;wait&quot;,&quot;Exploitant&quot;],[&quot;Relance prête&quot;,&quot;wait&quot;,&quot;Exploitant&quot;],[&quot;Pièce reçue&quot;,&quot;&quot;,&quot;Secrétaire&quot;],[&quot;Conforme&quot;,&quot;ok&quot;,&quot;Strajo&quot;],[&quot;En cours&quot;,&quot;&quot;,&quot;Strajo&quot;],[&quot;Terminé ✓&quot;,&quot;ok&quot;,&quot;—&quot;]];
+var L=document.querySelectorAll(&quot;li&quot;),chip=document.getElementById(&quot;chip&quot;),who=document.getElementById(&quot;who&quot;),i=-1;
+function set(t,c,w){chip.textContent=t;chip.className=&quot;chip&quot;+(c?&quot; &quot;+c:&quot;&quot;);who.textContent=w}
+function paint(){for(var k=0;k&lt;L.length;k++){var c=k===L.length-1?&quot;last&quot;:&quot;&quot;;if(k&lt;=i)c+=&quot; on&quot;;if(k===i)c+=&quot; cur&quot;;L[k].className=c}}
+function tick(){i++;if(i&gt;=L.length){i=-1;paint();set(&quot;À demander&quot;,&quot;&quot;,&quot;Secrétaire&quot;);setTimeout(tick,1400);return}paint();set(S[i][0],S[i][1],S[i][2]);setTimeout(tick,i===L.length-1?3800:1800)}
+setTimeout(tick,1000);
+&lt;/script&gt;
+&lt;/body&gt;&lt;/html&gt;"></iframe>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#4F5A52">Exemple illustratif — parcours de référence du MVP</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">07</p>
+</div>
+<aside>~50 s. Prenons notre parcours de référence : obtenir une pièce manquante, jusqu’au bout. Exemple : un dossier d’aide PAC bloqué parce qu’il manque une attestation MSA. Un : Strajo prépare la demande, la secrétaire la valide, elle part. Deux : Strajo suit l’attente et prépare la relance. Trois : la pièce arrive, elle est rangée dans le bon dossier. Quatre : on contrôle qu’elle correspond au besoin. Cinq : la procédure reprend. Six : on constate le résultat, et un récap part vers l’exploitant. À chaque instant, on sait qui doit faire le prochain geste. Et cette boucle devient une méthode réutilisable pour la prochaine exploitation.</aside>
+</section>
+<section id="benefices" data-transition="fade" style="background:#17231D;color:#F4EFE4;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#E8914A">Double bénéfice</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#F4EFE4">Deux bénéfices à chaque procédure</h2>
+<div data-build-in="left 1 auto" style="position:absolute;left:128px;top:340px;width:808px;display:flex;flex-direction:column;gap:16px;padding:48px;background:#22332A;border:2px solid #34483C;border-radius:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#E8914A">Pour la secrétaire</p>
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1.15;color:#F4EFE4">Plus d’exploitations, mieux suivies</h3>
+<ul style="font-size:32px;line-height:1.4;color:#BFC9BC">
+<li>Le contexte de chaque ferme, déjà prêt</li>
+<li>Mails et relances préparés, à valider</li>
+<li>Un travail transmissible à une collègue</li>
+</ul>
+</div>
+<div data-build-in="right 2 auto" style="position:absolute;left:984px;top:340px;width:808px;display:flex;flex-direction:column;gap:16px;padding:48px;background:#22332A;border:2px solid #34483C;border-radius:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#E8914A">Pour l’agriculteur</p>
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1.15;color:#F4EFE4">Il garde la main sur son administratif</h3>
+<ul style="font-size:32px;line-height:1.4;color:#BFC9BC">
+<li>Il sait où en est chaque démarche</li>
+<li>Il valide ce qui lui revient</li>
+<li>Historique et preuves lui restent</li>
+</ul>
+</div>
+<x-icon data-build-in="fade 3" name="Trust" style="position:absolute;left:128px;top:796px;width:48px;height:48px;color:#E8914A"></x-icon>
+<p data-build-in="fade 3" style="position:absolute;left:196px;top:792px;width:1596px;font-size:32px;line-height:1.4;color:#F4EFE4"><b>Garde-fou :</b> l’IA prépare et suit — l’humain valide les envois, les pièces et les clôtures.</p>
+<p data-build-in="fade 3" style="position:absolute;left:196px;top:844px;width:1596px;font-size:24px;line-height:1.4;color:#BFC9BC">Pas de boîte noire : chaque geste est tracé, chaque proposition expliquée.</p>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#BFC9BC">Strajo · Candidature D2E 2026</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#BFC9BC">08</p>
+</div>
+<aside>~35 s. Chaque procédure traitée produit deux bénéfices en même temps. Pour la secrétaire : elle suit plus d’exploitations, mieux, parce que le contexte est prêt, les réponses et relances sont préparées, et son travail est transmissible à une collègue. Pour l’agriculteur : il sait où en est chaque démarche, il valide ce qui lui revient, notamment ses factures, et l’historique et les preuves restent chez lui ; il n’est pas enfermé dans une dépendance. [clic] Et le garde-fou est clair : l’IA prépare et suit, l’humain valide ce qui engage. Pas de boîte noire.</aside>
+</section>
+<section id="marche" data-transition="fade" style="background:#F4EFE4;color:#17231D;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A84E14">Marché &amp; modèle</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#17231D">Par où on entre sur le marché</h2>
+<div data-build-in="rise 1 auto" style="position:absolute;left:128px;top:336px;width:512px;display:flex;flex-direction:column;gap:12px;padding:24px 0px 0px 0px;border-top:4px solid #D9732B">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#A84E14">Aujourd’hui · B2B</p>
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1.15;color:#17231D">Les secrétaires indépendantes</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">30 à 35 €/h, 2 à 4 h par semaine et par client. Avec Strajo, chacune suit plus d’exploitations, mieux.</p>
+<p style="font-size:24px;font-weight:700;line-height:1.4;color:#17231D">Abonnement : [__ €/mois] par secrétaire</p>
+</div>
+<x-shape data-build-in="fade 2 auto" kind="arrow-right" style="position:absolute;left:652px;top:352px;width:40px;height:24px;background:#D9732B"></x-shape>
+<div data-build-in="rise 2 auto" style="position:absolute;left:704px;top:336px;width:512px;display:flex;flex-direction:column;gap:12px;padding:24px 0px 0px 0px;border-top:4px solid #D9732B">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#A84E14">Dès le MVP · inclus</p>
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1.15;color:#17231D">Les agriculteurs</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">Via un portail invité, ils répondent, envoient leurs pièces et valident leurs factures. Un compte complet ensuite.</p>
+</div>
+<x-shape data-build-in="fade 3 auto" kind="arrow-right" style="position:absolute;left:1228px;top:352px;width:40px;height:24px;background:#D9732B"></x-shape>
+<div data-build-in="rise 3 auto" style="position:absolute;left:1280px;top:336px;width:512px;display:flex;flex-direction:column;gap:12px;padding:24px 0px 0px 0px;border-top:4px solid #D9732B">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#A84E14">Ensuite · B2B2C</p>
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1.15;color:#17231D">Les réseaux agricoles</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">MSA, Cerfrance, chambres d’agriculture : une qualité harmonisée et un coût par dossier réduit.</p>
+</div>
+<p data-build-in="fade 4 auto" style="position:absolute;left:128px;top:756px;width:1000px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#4F5A52">Pourquoi maintenant</p>
+<p data-build-in="pop 5 auto" style="position:absolute;left:128px;top:800px;width:486px;padding:12px 24px;font-size:24px;font-weight:600;line-height:1.4;text-align:center;color:#17231D;background:#E6DCC6;border-radius:999px">Facture électronique : 2026–2027</p>
+<p data-build-in="pop 6 auto" style="position:absolute;left:638px;top:800px;width:420px;padding:12px 24px;font-size:24px;font-weight:600;line-height:1.4;text-align:center;color:#17231D;background:#E6DCC6;border-radius:999px">Répit MSA pérennisé en 2026</p>
+<p data-build-in="pop 7 auto" style="position:absolute;left:1082px;top:800px;width:447px;padding:12px 24px;font-size:24px;font-weight:600;line-height:1.4;text-align:center;color:#17231D;background:#E6DCC6;border-radius:999px">L’IA prépare, l’humain valide</p>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#4F5A52">Tarifs horaires : offres de secrétaires indépendantes observées</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">09</p>
+</div>
+<aside>~45 s. On entre par les secrétaires indépendantes spécialisées en agriculture : elles facturent autour de 30 à 35 euros de l’heure, 2 à 4 heures par semaine et par client. Strajo leur permet de suivre plus d’exploitations, avec moins d’oublis. Le modèle : un abonnement par secrétaire, [préciser le prix]. Les agriculteurs sont inclus dès le MVP via un portail invité, puis un compte complet. Ensuite, les réseaux : MSA, Cerfrance, chambres d’agriculture, qui cherchent à harmoniser la qualité et à baisser le coût par dossier. Strajo complète les outils existants, compta, logiciels de gestion, portails ; il ne les remplace pas. Pourquoi maintenant : la réforme de la facture électronique arrive sur toutes les exploitations, l’aide MSA est pérennisée, et l’IA sait désormais préparer et suivre ce travail sous contrôle humain.</aside>
+</section>
+<section id="avancement" data-transition="fade" style="background:#17231D;color:#F4EFE4;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#E8914A">Où on en est</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#F4EFE4">D’avril à aujourd’hui, et la suite</h2>
+<hr data-build-in="left 1 auto" style="position:absolute;left:128px;top:540px;width:1165px;border-top:3px solid #BFC9BC">
+<hr data-build-in="left 1 auto" style="position:absolute;left:1293px;top:540px;width:499px;border-top:3px dashed #E8914A">
+<p data-build-in="rise 2 auto" style="position:absolute;left:144px;top:470px;width:300px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#E8914A">Avr.–mai 2026</p>
+<x-shape data-build-in="pop 2 auto" kind="ellipse" style="position:absolute;left:280px;top:527px;width:28px;height:28px;background:#E8914A"></x-shape>
+<p data-build-in="rise 2 auto" style="position:absolute;left:144px;top:584px;width:300px;font-size:24px;line-height:1.4;text-align:center;color:#BFC9BC">Premier angle : le mail de la secrétaire</p>
+<p data-build-in="rise 3 auto" style="position:absolute;left:477px;top:470px;width:300px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#E8914A">Juin–juil. 2026</p>
+<x-shape data-build-in="pop 3 auto" kind="ellipse" style="position:absolute;left:613px;top:527px;width:28px;height:28px;background:#E8914A"></x-shape>
+<p data-build-in="rise 3 auto" style="position:absolute;left:477px;top:584px;width:300px;font-size:24px;line-height:1.4;text-align:center;color:#BFC9BC">Actions encadrées, preuves et traçabilité</p>
+<p data-build-in="rise 4 auto" style="position:absolute;left:810px;top:470px;width:300px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#E8914A">Août 2026</p>
+<x-shape data-build-in="pop 4 auto" kind="ellipse" style="position:absolute;left:946px;top:527px;width:28px;height:28px;background:#E8914A"></x-shape>
+<p data-build-in="rise 4 auto" style="position:absolute;left:810px;top:584px;width:300px;font-size:24px;line-height:1.4;text-align:center;color:#BFC9BC">Recentrage sur la procédure, de bout en bout</p>
+<p data-build-in="rise 5 auto" style="position:absolute;left:1143px;top:470px;width:300px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#E8914A">Sept.–oct. 2026</p>
+<x-shape data-build-in="pop 5 auto" kind="ellipse" style="position:absolute;left:1275px;top:523px;width:36px;height:36px;background:#E8914A;box-shadow:0px 0px 0px 10px rgba(232,145,74,0.25)"></x-shape>
+<p data-build-in="rise 5 auto" style="position:absolute;left:1143px;top:584px;width:300px;font-size:24px;font-weight:700;line-height:1.4;text-align:center;color:#F4EFE4">14 entretiens terrain · MVP spécifié</p>
+<p data-build-in="rise 6 auto" style="position:absolute;left:1476px;top:470px;width:300px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;text-align:center;color:#E8914A">[Janv. 2027]</p>
+<x-shape data-build-in="pop 6 auto" kind="ellipse" style="position:absolute;left:1612px;top:527px;width:28px;height:28px;background:#17231D;border:3px solid #E8914A"></x-shape>
+<p data-build-in="rise 6 auto" style="position:absolute;left:1476px;top:584px;width:300px;font-size:24px;line-height:1.4;text-align:center;color:#BFC9BC">Première mise à l’épreuve avec une secrétaire</p>
+<div data-build-in="fade 7" style="position:absolute;left:128px;top:744px;width:1664px;display:flex;flex-direction:column;gap:8px;padding:32px 40px;background:#22332A;border-left:6px solid #E8914A;border-radius:20px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#E8914A">Critère de la première mise à l’épreuve</p>
+<p style="font-size:32px;line-height:1.4;color:#F4EFE4">Le nombre de récaps réellement envoyés aux exploitants par une secrétaire.</p>
+</div>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#BFC9BC">Strajo · Candidature D2E 2026</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#BFC9BC">10</p>
+</div>
+<aside>~35 s. Où on en est. Au printemps, on a commencé par un angle étroit : le mail de la secrétaire. L’été, on a travaillé la traçabilité et les preuves. En août, on s’est recentrés sur ce qui compte vraiment : la procédure vivante, de bout en bout. Depuis la rentrée : quatorze entretiens terrain et un MVP entièrement spécifié. [Préciser ici l’état du prototype.] La prochaine étape, c’est une première mise à l’épreuve avec une secrétaire réelle. [clic] Et on s’est fixé un critère honnête : le nombre de récaps réellement envoyés aux exploitants. Le temps gagné, on le mesurera net, après relecture et correction.</aside>
+</section>
+<section id="d2e" data-transition="fade" style="background:#F4EFE4;color:#17231D;font-family:'DM Sans', Arial, sans-serif;padding:128px 128px 160px;display:flex;flex-direction:column;gap:24px">
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:3px;text-transform:uppercase;color:#A84E14">L’équipe &amp; le D2E</p>
+<h2 style="font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#17231D">Pourquoi le D2E, maintenant</h2>
+<div data-build-in="left 1 auto" style="position:absolute;left:128px;top:340px;width:600px;display:flex;flex-direction:row;gap:24px;align-items:center;padding:32px;background:#FBF8F1;border:2px solid #E2D8C3;border-radius:20px">
+<div style="width:104px;height:104px;display:flex;align-items:center;justify-content:center;background:#D9732B;border-radius:50%">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1;color:#17231D">[A]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:4px">
+<p style="font-size:32px;font-weight:700;line-height:1.3;color:#17231D">[Prénom Nom]</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">[Formation · établissement]</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">[Rôle dans le projet]</p>
+</div>
+</div>
+<div data-build-in="left 2 auto" style="position:absolute;left:128px;top:552px;width:600px;display:flex;flex-direction:row;gap:24px;align-items:center;padding:32px;background:#FBF8F1;border:2px solid #E2D8C3;border-radius:20px">
+<div style="width:104px;height:104px;display:flex;align-items:center;justify-content:center;background:#2F6B47;border-radius:50%">
+<p style="font-family:'Fraunces', Georgia, serif;font-size:44px;font-weight:600;line-height:1;color:#F4EFE4">[B]</p>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;gap:4px">
+<p style="font-size:32px;font-weight:700;line-height:1.3;color:#17231D">[Prénom Nom]</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">[Formation · établissement]</p>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">[Rôle dans le projet]</p>
+</div>
+</div>
+<p data-build-in="fade 3 auto" style="position:absolute;left:800px;top:340px;width:992px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;letter-spacing:2px;text-transform:uppercase;color:#A84E14">Ce que le D2E va nous apporter</p>
+<div data-build-in="rise 4 auto" style="position:absolute;left:800px;top:396px;width:992px;display:flex;flex-direction:column;gap:6px;padding:0px 0px 0px 28px;border-left:4px solid #D9732B">
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:32px;font-weight:600;line-height:1.2;color:#17231D">Valider le modèle économique</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">Business Model Canvas, étude de marché, Go / No Go : tester la disposition à payer.</p>
+</div>
+<div data-build-in="rise 5 auto" style="position:absolute;left:800px;top:530px;width:992px;display:flex;flex-direction:column;gap:6px;padding:0px 0px 0px 28px;border-left:4px solid #D9732B">
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:32px;font-weight:600;line-height:1.2;color:#17231D">Structurer l’entreprise</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">Statut juridique, comptabilité, financement, protection des données.</p>
+</div>
+<div data-build-in="rise 6 auto" style="position:absolute;left:800px;top:664px;width:992px;display:flex;flex-direction:column;gap:6px;padding:0px 0px 0px 28px;border-left:4px solid #D9732B">
+<h3 style="font-family:'Fraunces', Georgia, serif;font-size:32px;font-weight:600;line-height:1.2;color:#17231D">S’ancrer dans l’écosystème toulousain</h3>
+<p style="font-size:24px;line-height:1.4;color:#4F5A52">Tuteurs, réseau Pépite ECRIN, acteurs agricoles d’Occitanie.</p>
+</div>
+<p data-build-in="fade 7" style="position:absolute;left:800px;top:806px;width:992px;font-family:'Fraunces', Georgia, serif;font-size:32px;font-style:italic;line-height:1.3;color:#17231D">En retour, on apporte au groupe notre démarche terrain et nos compétences en IA.</p>
+<div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
+<p style="font-size:24px;color:#4F5A52">Strajo · Candidature D2E 2026</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">11</p>
+</div>
+<aside>~40 s. Nous, c’est [présenter l’équipe en une phrase chacun : formation, établissement, rôle, et l’expérience qui nous rend crédibles, par exemple Circul’Egg]. Pourquoi le D2E maintenant : on a validé le problème sur le terrain, il faut maintenant valider le modèle économique. Les ateliers Business Model Canvas, étude de marché et Go / No Go sont exactement ce dont on a besoin pour tester la disposition à payer. Ensuite, structurer l’entreprise : statut, compta, financement, protection des données, un sujet clé quand on manipule des documents d’exploitation. Et s’ancrer ici, à Toulouse, avec des tuteurs et les acteurs agricoles d’Occitanie. [clic] En retour, on apporte au groupe notre démarche terrain et nos compétences en IA.</aside>
+</section>
+<section id="merci" data-transition="fade" style="background:#17231D;color:#F4EFE4;font-family:'DM Sans', Arial, sans-serif;padding:128px;display:flex;flex-direction:column">
+<svg aria-label="Sillons d’un champ qui convergent vers un soleil levant" style="position:absolute;left:1120px;top:0px;width:800px;height:1080px" width="800" height="1080" viewBox="0 0 800 1080" xmlns="http://www.w3.org/2000/svg">
+<rect x="0" y="0" width="800" height="1080" fill="#17231D"/>
+<path d="M 510 300 A 110 110 0 0 1 730 300 Z" fill="#D9732B"/>
+<line x1="0" y1="300" x2="800" y2="300" stroke="#3A4D42" stroke-width="2"/>
+<g fill="none" stroke="#2E4237" stroke-width="3">
+<line x1="-680" y1="1080" x2="494" y2="300"/>
+<line x1="-505" y1="1080" x2="515" y2="300"/>
+<line x1="-330" y1="1080" x2="536" y2="300"/>
+<line x1="-155" y1="1080" x2="557" y2="300"/>
+<line x1="20" y1="1080" x2="578" y2="300"/>
+<line x1="195" y1="1080" x2="599" y2="300"/>
+<line x1="545" y1="1080" x2="641" y2="300"/>
+<line x1="720" y1="1080" x2="662" y2="300"/>
+<line x1="895" y1="1080" x2="683" y2="300"/>
+<line x1="1070" y1="1080" x2="704" y2="300"/>
+<line x1="1245" y1="1080" x2="725" y2="300"/>
+<line x1="1420" y1="1080" x2="746" y2="300"/>
+</g>
+<defs><linearGradient id="fadeL" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#17231D"/><stop offset="1" stop-color="#17231D" stop-opacity="0"/></linearGradient></defs>
+<rect x="0" y="0" width="280" height="1080" fill="url(#fadeL)"/>
+<line x1="370" y1="1080" x2="620" y2="300" stroke="#D9732B" stroke-width="4" stroke-dasharray="14 12"/>
+<circle r="9" fill="#E8914A"><animateMotion dur="5s" repeatCount="indefinite" path="M 370 1080 L 620 300"/></circle>
+</svg>
+<h1 data-build-in="rise 1 auto" style="position:absolute;left:128px;top:250px;width:960px;font-family:'Fraunces', Georgia, serif;font-size:240px;font-weight:600;line-height:1;letter-spacing:-6px;color:#F4EFE4">Strajo</h1>
+<p data-build-in="fade 2 auto" style="position:absolute;left:128px;top:540px;width:960px;font-family:'Fraunces', Georgia, serif;font-size:44px;font-style:italic;line-height:1.2;color:#F4EFE4">Reprendre et garder la main sur l’administratif agricole.</p>
+<h2 data-build-in="rise 3 auto" style="position:absolute;left:128px;top:712px;width:960px;font-family:'Fraunces', Georgia, serif;font-size:72px;font-weight:600;line-height:1.1;color:#E8914A">Merci. Vos questions ?</h2>
+<p data-build-in="fade 4 auto" style="position:absolute;left:128px;top:880px;width:960px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:1.4;color:#BFC9BC">[email] · [téléphone]</p>
+<aside>~10 s. Strajo, c’est permettre aux agriculteurs et à celles qui les accompagnent de reprendre, et de garder, la main sur l’administratif. Merci, on est prêts pour vos questions. Questions probables à préparer : le prix et qui paie ; la responsabilité en cas d’erreur de l’IA ; l’accès aux mails et la protection des données (RGPD) ; la différence avec Cerfrance ou un logiciel comptable ; l’état réel du prototype ; le temps que vous pouvez y consacrer pendant le D2E.</aside>
+</section>
+</div></div>
+<div id="hud"></div>
+<div id="notes"><div class="t">Notes · <span id="ntitle"></span></div><div id="ntext"></div></div>
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(stage.children).filter(function (n) { return n.tagName === 'SECTION'; });
+
+  // Icônes x-icon (tracés simples, couleur = currentColor)
+  var ICONS = {
+    Check: '<polyline points="20 6 9 17 4 12"/>',
+    CheckCircle: '<circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/>',
+    Clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    Lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    ThumbsUp: '<path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>',
+    Trust: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+    Verified: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+    Users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+    Lightbulb: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
+    Warning: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/>',
+    Star: '<polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/>',
+    Chart: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+    _: '<circle cx="12" cy="12" r="9"/>'
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('x-icon'), function (el) {
+    el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      (ICONS[el.getAttribute('name')] || ICONS._) + '</svg>';
+  });
+
+  // Groupes d'apparition : "effet [ordre] [auto]" ; même ordre = même groupe
+  slides.forEach(function (s) {
+    var groups = {};
+    Array.prototype.forEach.call(s.querySelectorAll('[data-build-in]'), function (el, i) {
+      var t = el.getAttribute('data-build-in').trim().split(/\s+/);
+      var ord = t.filter(function (x) { return /^\d+$/.test(x); })[0];
+      var key = ord ? +ord : 1000 + i;
+      el.setAttribute('data-fx', t[0]);
+      var g = groups[key] || (groups[key] = { els: [], auto: false });
+      g.els.push(el);
+      g.auto = g.auto || t.indexOf('auto') > -1;
+    });
+    s._groups = Object.keys(groups).map(Number).sort(function (a, b) { return a - b; }).map(function (k) { return groups[k]; });
+  });
+
+  var cur = 0, step = 0, autoUntil = 0, timers = [];
+
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+  function setBuilt(s, n) {
+    s.classList.add('instant');
+    s._groups.forEach(function (g, i) { g.els.forEach(function (el) { el.classList.toggle('pre', i >= n); }); });
+    void s.offsetWidth;
+    s.classList.remove('instant');
+  }
+  function reveal(i) {
+    slides[cur]._groups[i].els.forEach(function (el) { el.classList.remove('pre'); });
+    step = Math.max(step, i + 1);
+  }
+  function scheduleAutos(delay) {
+    clearTimers();
+    var G = slides[cur]._groups, k = step;
+    for (; k < G.length && G[k].auto; k++) {
+      (function (i, d) { timers.push(setTimeout(function () { reveal(i); }, d)); })(k, delay);
+      delay += 320;
+    }
+    autoUntil = k;
+  }
+  function go(n, built) {
+    if (n < 0 || n >= slides.length) return;
+    clearTimers();
+    slides[cur].classList.remove('current');
+    cur = n;
+    var s = slides[cur];
+    step = built ? s._groups.length : 0;
+    autoUntil = step;
+    setBuilt(s, step);
+    s.classList.add('current');
+    if (!built) scheduleAutos(450);
+    history.replaceState(null, '', '#' + (cur + 1));
+    var aside = s.querySelector('aside');
+    document.getElementById('ntitle').textContent = (cur + 1) + ' / ' + slides.length;
+    document.getElementById('ntext').textContent = aside ? aside.textContent : '';
+    flashHud();
+  }
+  function next() {
+    var G = slides[cur]._groups;
+    if (step < autoUntil) {            // apparitions automatiques en cours : on les termine
+      clearTimers();
+      while (step < autoUntil) reveal(step);
+    } else if (step < G.length) {      // apparition au clic, puis les automatiques qui suivent
+      reveal(step);
+      scheduleAutos(320);
+    } else {
+      go(cur + 1);
+    }
+  }
+  function prev() { go(cur - 1, true); }
+
+  var hudTimer;
+  function flashHud() {
+    document.getElementById('hud').textContent = (cur + 1) + ' / ' + slides.length + '   ·   ← →  N notes  F plein écran';
+    document.body.classList.add('hud');
+    clearTimeout(hudTimer);
+    hudTimer = setTimeout(function () { document.body.classList.remove('hud'); }, 1800);
+  }
+  function fit() {
+    var vp = document.getElementById('viewport');
+    var sc = Math.min(vp.clientWidth / 1920, vp.clientHeight / 1080);
+    stage.style.transform = 'scale(' + sc + ')';
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === ' ' || k === 'PageDown' || k === 'Enter' || k === 'ArrowDown') { e.preventDefault(); next(); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace' || k === 'ArrowUp') { e.preventDefault(); prev(); }
+    else if (k === 'Home') go(0);
+    else if (k === 'End') go(slides.length - 1, true);
+    else if (k === 'n' || k === 'N') { document.body.classList.toggle('notes'); fit(); }
+    else if (k === 'f' || k === 'F') {
+      if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+    }
+  });
+  document.getElementById('viewport').addEventListener('click', next);
+  document.addEventListener('mousemove', flashHud);
+  window.addEventListener('resize', fit);
+
+  fit();
+  var start = parseInt((location.hash || '').slice(1), 10);
+  go(start >= 1 && start <= slides.length ? start - 1 : 0);
+})();
+</script>
+</body>
+</html>

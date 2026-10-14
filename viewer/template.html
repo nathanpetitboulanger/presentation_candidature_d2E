@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+{{FONTS}}
+<style>
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #0D1411; overflow: hidden; }
+#viewport { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+#stage { position: relative; flex: none; width: 1920px; height: 1080px; overflow: hidden; transform-origin: center center; }
+
+/* Slides : canevas fixe 1920×1080, un seul visible à la fois */
+#stage > section { position: absolute; inset: 0; width: 1920px; height: 1080px; overflow: hidden;
+  opacity: 0; visibility: hidden; transition: opacity .45s ease, visibility 0s linear .45s; }
+#stage > section.current { opacity: 1; visibility: visible; transition: opacity .45s ease, visibility 0s; }
+section h1, section h2, section h3, section p, section ul, section ol, section li { margin: 0; }
+section ul, section ol { padding-left: 1.1em; }
+section hr { margin: 0; border: 0; height: 0; }
+section aside { display: none; }
+
+/* Éléments propres au format Slides */
+x-shape, x-icon { display: block; }
+x-shape[kind=ellipse] { border-radius: 50%; }
+x-shape[kind=diamond] { clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
+x-shape[kind=arrow-right] { clip-path: polygon(0 30%, 60% 30%, 60% 0, 100% 50%, 60% 100%, 60% 70%, 0 70%); }
+x-shape[kind=arrow-left] { clip-path: polygon(100% 30%, 40% 30%, 40% 0, 0 50%, 40% 100%, 40% 70%, 100% 70%); }
+x-shape[kind=arrow-up] { clip-path: polygon(30% 100%, 30% 40%, 0 40%, 50% 0, 100% 40%, 70% 40%, 70% 100%); }
+x-shape[kind=arrow-down] { clip-path: polygon(30% 0, 30% 60%, 0 60%, 50% 100%, 100% 60%, 70% 60%, 70% 0); }
+x-icon svg { display: block; width: 100%; height: 100%; }
+iframe.x-embed { border: 0; background: transparent; color-scheme: light; pointer-events: none; }
+
+/* Apparitions (data-build-in) — translate/scale se composent avec le transform inline */
+[data-build-in] { transition: opacity .55s ease, translate .65s cubic-bezier(.2,.75,.25,1), scale .55s cubic-bezier(.3,1.45,.55,1); }
+[data-build-in].pre { opacity: 0; }
+[data-build-in].pre[data-fx=rise] { translate: 0 48px; }
+[data-build-in].pre[data-fx=drop] { translate: 0 -48px; }
+[data-build-in].pre[data-fx=left] { translate: -72px 0; }
+[data-build-in].pre[data-fx=right] { translate: 72px 0; }
+[data-build-in].pre[data-fx=scale] { scale: .85; }
+[data-build-in].pre[data-fx=pop] { scale: .55; }
+section.instant [data-build-in] { transition: none !important; }
+
+/* Interface du lecteur */
+#hud { position: fixed; right: 16px; bottom: 12px; padding: 6px 10px; border-radius: 8px; background: rgba(13,20,17,.8);
+  font: 14px/1.2 system-ui, sans-serif; color: #BFC9BC; opacity: 0; transition: opacity .3s; pointer-events: none; }
+body.hud #hud { opacity: 1; }
+#notes { position: fixed; left: 0; right: 0; bottom: 0; height: 30vh; overflow: auto; padding: 14px 24px 20px;
+  background: #0A100D; color: #E8EFE9; font: 19px/1.55 system-ui, sans-serif; border-top: 1px solid #2C3B33; display: none; }
+body.notes #notes { display: block; }
+body.notes #viewport { bottom: 30vh; }
+#notes .t { font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: #E8914A; margin-bottom: 6px; }
+
+/* Impression / PDF : toutes les slides, entièrement construites */
+@media print {
+  @page { size: 1920px 1080px; margin: 0; }
+  html, body { height: auto; overflow: visible; background: none; }
+  #viewport { position: static; display: block; }
+  #stage { transform: none !important; width: 1920px; height: auto; overflow: visible; }
+  #stage > section { position: relative; opacity: 1 !important; visibility: visible !important; transition: none; break-after: page; }
+  [data-build-in].pre { opacity: 1 !important; translate: none !important; scale: none !important; }
+  #hud, #notes { display: none !important; }
+}
+</style>
+</head>
+<body>
+<div id="viewport"><div id="stage">
+{{SLIDES}}
+</div></div>
+<div id="hud"></div>
+<div id="notes"><div class="t">Notes · <span id="ntitle"></span></div><div id="ntext"></div></div>
+<script>
+(function () {
+  var stage = document.getElementById('stage');
+  var slides = Array.prototype.slice.call(stage.children).filter(function (n) { return n.tagName === 'SECTION'; });
+
+  // Icônes x-icon (tracés simples, couleur = currentColor)
+  var ICONS = {
+    Check: '<polyline points="20 6 9 17 4 12"/>',
+    CheckCircle: '<circle cx="12" cy="12" r="10"/><polyline points="8 12 11 15 16 9"/>',
+    Clock: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    Lock: '<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+    ThumbsUp: '<path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.3a2 2 0 0 0 2-1.7l1.4-9a2 2 0 0 0-2-2.3z"/><path d="M7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>',
+    Trust: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+    Verified: '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/>',
+    Users: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.9"/><path d="M16 3.1a4 4 0 0 1 0 7.8"/>',
+    Lightbulb: '<path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z"/>',
+    Warning: '<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/>',
+    Star: '<polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2"/>',
+    Chart: '<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+    _: '<circle cx="12" cy="12" r="9"/>'
+  };
+  Array.prototype.forEach.call(document.querySelectorAll('x-icon'), function (el) {
+    el.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      (ICONS[el.getAttribute('name')] || ICONS._) + '</svg>';
+  });
+
+  // Groupes d'apparition : "effet [ordre] [auto]" ; même ordre = même groupe
+  slides.forEach(function (s) {
+    var groups = {};
+    Array.prototype.forEach.call(s.querySelectorAll('[data-build-in]'), function (el, i) {
+      var t = el.getAttribute('data-build-in').trim().split(/\s+/);
+      var ord = t.filter(function (x) { return /^\d+$/.test(x); })[0];
+      var key = ord ? +ord : 1000 + i;
+      el.setAttribute('data-fx', t[0]);
+      var g = groups[key] || (groups[key] = { els: [], auto: false });
+      g.els.push(el);
+      g.auto = g.auto || t.indexOf('auto') > -1;
+    });
+    s._groups = Object.keys(groups).map(Number).sort(function (a, b) { return a - b; }).map(function (k) { return groups[k]; });
+  });
+
+  var cur = 0, step = 0, autoUntil = 0, timers = [];
+
+  function clearTimers() { timers.forEach(clearTimeout); timers = []; }
+  function setBuilt(s, n) {
+    s.classList.add('instant');
+    s._groups.forEach(function (g, i) { g.els.forEach(function (el) { el.classList.toggle('pre', i >= n); }); });
+    void s.offsetWidth;
+    s.classList.remove('instant');
+  }
+  function reveal(i) {
+    slides[cur]._groups[i].els.forEach(function (el) { el.classList.remove('pre'); });
+    step = Math.max(step, i + 1);
+  }
+  function scheduleAutos(delay) {
+    clearTimers();
+    var G = slides[cur]._groups, k = step;
+    for (; k < G.length && G[k].auto; k++) {
+      (function (i, d) { timers.push(setTimeout(function () { reveal(i); }, d)); })(k, delay);
+      delay += 320;
+    }
+    autoUntil = k;
+  }
+  function go(n, built) {
+    if (n < 0 || n >= slides.length) return;
+    clearTimers();
+    slides[cur].classList.remove('current');
+    cur = n;
+    var s = slides[cur];
+    step = built ? s._groups.length : 0;
+    autoUntil = step;
+    setBuilt(s, step);
+    s.classList.add('current');
+    if (!built) scheduleAutos(450);
+    history.replaceState(null, '', '#' + (cur + 1));
+    var aside = s.querySelector('aside');
+    document.getElementById('ntitle').textContent = (cur + 1) + ' / ' + slides.length;
+    document.getElementById('ntext').textContent = aside ? aside.textContent : '';
+    flashHud();
+  }
+  function next() {
+    var G = slides[cur]._groups;
+    if (step < autoUntil) {            // apparitions automatiques en cours : on les termine
+      clearTimers();
+      while (step < autoUntil) reveal(step);
+    } else if (step < G.length) {      // apparition au clic, puis les automatiques qui suivent
+      reveal(step);
+      scheduleAutos(320);
+    } else {
+      go(cur + 1);
+    }
+  }
+  function prev() { go(cur - 1, true); }
+
+  var hudTimer;
+  function flashHud() {
+    document.getElementById('hud').textContent = (cur + 1) + ' / ' + slides.length + '   ·   ← →  N notes  F plein écran';
+    document.body.classList.add('hud');
+    clearTimeout(hudTimer);
+    hudTimer = setTimeout(function () { document.body.classList.remove('hud'); }, 1800);
+  }
+  function fit() {
+    var vp = document.getElementById('viewport');
+    var sc = Math.min(vp.clientWidth / 1920, vp.clientHeight / 1080);
+    stage.style.transform = 'scale(' + sc + ')';
+  }
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    var k = e.key;
+    if (k === 'ArrowRight' || k === ' ' || k === 'PageDown' || k === 'Enter' || k === 'ArrowDown') { e.preventDefault(); next(); }
+    else if (k === 'ArrowLeft' || k === 'PageUp' || k === 'Backspace' || k === 'ArrowUp') { e.preventDefault(); prev(); }
+    else if (k === 'Home') go(0);
+    else if (k === 'End') go(slides.length - 1, true);
+    else if (k === 'n' || k === 'N') { document.body.classList.toggle('notes'); fit(); }
+    else if (k === 'f' || k === 'F') {
+      if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+    }
+  });
+  document.getElementById('viewport').addEventListener('click', next);
+  document.addEventListener('mousemove', flashHud);
+  window.addEventListener('resize', fit);
+
+  fit();
+  var start = parseInt((location.hash || '').slice(1), 10);
+  go(start >= 1 && start <= slides.length ? start - 1 : 0);
+})();
+</script>
+</body>
+</html>

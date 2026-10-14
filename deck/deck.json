@@ -1,0 +1,19 @@
+{
+  "v": 4,
+  "createdOnFiles": { "v": 1, "at": "2026-10-14T12:00:00Z" },
+  "lists": "css",
+  "title": "Strajo — Pitch D2E",
+  "cover": "cover",
+  "order": ["cover", "constat", "probleme", "msa", "terrain", "solution", "boucle", "benefices", "marche", "avancement", "d2e", "merci"],
+  "sections": {
+    "s1": { "description": "Le problème : l’administratif agricole décroche, et le besoin est reconnu", "start": "cover" },
+    "s2": { "description": "La solution : Strajo organise le travail par procédure", "start": "solution" },
+    "s3": { "description": "Le projet : marché, avancement, équipe et D2E", "start": "marche" }
+  },
+  "faces": {
+    "fraunces": { "family": "Fraunces", "href": "https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400..700;1,400..700&display=swap" },
+    "dm-sans": { "family": "DM Sans", "href": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&display=swap" },
+    "jetbrains-mono": { "family": "JetBrains Mono", "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&display=swap" }
+  },
+  "designSystems": []
+}

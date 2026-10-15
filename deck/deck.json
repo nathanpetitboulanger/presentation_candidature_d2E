@@ -4,11 +4,14 @@
   "lists": "css",
   "title": "Strajo — Pitch D2E",
   "cover": "cover",
-  "order": ["cover", "constat", "probleme", "msa", "terrain", "solution", "boucle", "benefices", "marche", "avancement", "d2e", "merci"],
+  "order": ["cover", "constat", "probleme", "msa", "terrain", "marche", "solution", "boucle", "benefices", "difference", "modele", "avancement", "roadmap", "porteur", "d2e", "merci"],
   "sections": {
-    "s1": { "description": "Le problème : l’administratif agricole décroche, et le besoin est reconnu", "start": "cover" },
-    "s2": { "description": "La solution : Strajo organise le travail par procédure", "start": "solution" },
-    "s3": { "description": "Le projet : marché, avancement, équipe et D2E", "start": "marche" }
+    "s1": { "description": "Accroche et origine du projet : l’administratif agricole décroche, le besoin est reconnu et confirmé sur le terrain", "start": "cover" },
+    "s2": { "description": "Clients et marché : pour qui, combien, pourquoi maintenant", "start": "marche" },
+    "s3": { "description": "La solution et la proposition de valeur : Strajo organise le travail par procédure", "start": "solution" },
+    "s4": { "description": "Business model : qui paie, pour quoi, combien", "start": "modele" },
+    "s5": { "description": "État d’avancement et roadmap à 6 mois", "start": "avancement" },
+    "s6": { "description": "Le porteur et ses attentes vis-à-vis du D2E", "start": "porteur" }
   },
   "faces": {
     "fraunces": { "family": "Fraunces", "href": "https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400..700;1,400..700&display=swap" },

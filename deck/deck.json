@@ -11,7 +11,7 @@
     "s3": { "description": "La solution et la proposition de valeur : Strajo organise le travail par procédure", "start": "solution" },
     "s4": { "description": "Business model : qui paie, pour quoi, combien", "start": "modele" },
     "s5": { "description": "État d’avancement et roadmap à 6 mois", "start": "avancement" },
-    "s6": { "description": "Le porteur et ses attentes vis-à-vis du D2E", "start": "porteur" }
+    "s6": { "description": "L’équipe et ses attentes vis-à-vis du D2E", "start": "porteur" }
   },
   "faces": {
     "fraunces": { "family": "Fraunces", "href": "https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400..700;1,400..700&display=swap" },

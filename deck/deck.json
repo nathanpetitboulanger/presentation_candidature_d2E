@@ -1,22 +1,70 @@
 {
   "v": 4,
-  "createdOnFiles": { "v": 1, "at": "2026-10-14T12:00:00Z" },
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-14T12:00:00Z"
+  },
   "lists": "css",
   "title": "Strajo — Pitch D2E",
   "cover": "cover",
-  "order": ["cover", "constat", "probleme", "msa", "terrain", "marche", "solution", "boucle", "benefices", "difference", "modele", "avancement", "roadmap", "porteur", "d2e", "merci"],
+  "order": [
+    "cover",
+    "constat",
+    "complexite",
+    "cout",
+    "strategie",
+    "marche",
+    "solution",
+    "procedure",
+    "veille",
+    "difference",
+    "modele",
+    "porteur",
+    "avancement",
+    "terrain",
+    "roadmap",
+    "d2e",
+    "merci"
+  ],
   "sections": {
-    "s1": { "description": "Accroche et origine du projet : l’administratif agricole décroche, le besoin est reconnu et confirmé sur le terrain", "start": "cover" },
-    "s2": { "description": "Clients et marché : pour qui, combien, pourquoi maintenant", "start": "marche" },
-    "s3": { "description": "La solution et la proposition de valeur : Strajo organise le travail par procédure", "start": "solution" },
-    "s4": { "description": "Business model : qui paie, pour quoi, combien", "start": "modele" },
-    "s5": { "description": "État d’avancement et roadmap à 6 mois", "start": "avancement" },
-    "s6": { "description": "L’équipe et ses attentes vis-à-vis du D2E", "start": "porteur" }
+    "s1": {
+      "description": "Contexte et problème : l’administratif agricole pèse, change sans cesse, et coûte cher qu’on se fasse aider ou non",
+      "start": "cover"
+    },
+    "s2": {
+      "description": "Stratégie et marché : commencer par les secrétaires administratives, un marché émergent",
+      "start": "strategie"
+    },
+    "s3": {
+      "description": "La solution : transformer le flou en clair, tout relier à une procédure, et en quoi on se différencie",
+      "start": "solution"
+    },
+    "s4": {
+      "description": "Business model : poste de pilotage + prix par ferme, calé sur le temps gagné",
+      "start": "modele"
+    },
+    "s5": {
+      "description": "L’équipe, l’état d’avancement et la roadmap",
+      "start": "porteur"
+    },
+    "s6": {
+      "description": "Nos attentes vis-à-vis du D2E",
+      "start": "d2e"
+    }
   },
   "faces": {
-    "fraunces": { "family": "Fraunces", "href": "https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400..700;1,400..700&display=swap" },
-    "dm-sans": { "family": "DM Sans", "href": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&display=swap" },
-    "jetbrains-mono": { "family": "JetBrains Mono", "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&display=swap" }
+    "fraunces": {
+      "family": "Fraunces",
+      "href": "https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400..700;1,400..700&display=swap"
+    },
+    "dm-sans": {
+      "family": "DM Sans",
+      "href": "https://fonts.googleapis.com/css2?family=DM+Sans:wght@400..700&display=swap"
+    },
+    "jetbrains-mono": {
+      "family": "JetBrains Mono",
+      "href": "https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400..700&display=swap"
+    }
   },
   "designSystems": []
 }

@@ -8,7 +8,7 @@
 <p data-build-in="left 1 auto" style="position:absolute;left:128px;top:590px;width:300px;height:52px;padding:0px 20px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:52px;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 6px 14px rgba(23,35,29,0.10)">Échéances</p>
 <p data-build-in="rise 1 auto" style="position:absolute;left:128px;top:656px;width:300px;height:52px;padding:0px 20px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:52px;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 6px 14px rgba(23,35,29,0.10)">Documents</p>
 <p data-build-in="left 1 auto" style="position:absolute;left:128px;top:722px;width:300px;height:52px;padding:0px 20px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:52px;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 6px 14px rgba(23,35,29,0.10)">Factures</p>
-<p data-build-in="drop 1 auto" style="position:absolute;left:128px;top:788px;width:300px;height:52px;padding:0px 20px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:52px;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 6px 14px rgba(23,35,29,0.10)">Devis</p>
+<p data-build-in="drop 1 auto" style="position:absolute;left:128px;top:788px;width:300px;height:52px;padding:0px 20px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:52px;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 6px 14px rgba(23,35,29,0.10)">Décrets &amp; FAQ</p>
 <p data-build-in="left 1 auto" style="position:absolute;left:128px;top:854px;width:300px;height:52px;padding:0px 20px;font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;line-height:52px;color:#17231D;background:#FBF8F1;border:2px solid #D8CDB5;border-radius:12px;box-shadow:0px 6px 14px rgba(23,35,29,0.10)">Relevés de compte</p>
 <svg data-build-in="fade 2 auto" aria-label="Les sources convergent vers la procédure" style="position:absolute;left:428px;top:392px;width:572px;height:520px" width="572" height="520" viewBox="0 0 572 520" xmlns="http://www.w3.org/2000/svg">
 <g stroke="#CDBFA3" stroke-width="3" stroke-dasharray="4 10" stroke-linecap="round">
@@ -54,28 +54,28 @@ li.last.on i{background:#2F6B47;color:#F4EFE4}
 li span{color:#4F5A52}
 </style>
 <div class="card">
-<div class="head"><div><p class="k">Procédure · exemple</p><p class="t">Aide PAC 2026 — attestation MSA</p><p class="n">Prochain mouvement : <b id="who">Secrétaire</b></p></div><p class="chip" id="chip">À demander</p></div>
+<div class="head"><div><p class="k">Procédure · aide GNR agricole</p><p class="t">Livraisons d’août · 8 fermes</p><p class="n">Prochain : <b id="who">Strajo</b> · dépôt avant le 31 oct.</p></div><p class="chip" id="chip">Nouvelle règle</p></div>
 <ol>
-<li><i>1</i><p><b>Demander</b> <span>· mail préparé par Strajo, validé, envoyé</span></p></li>
-<li><i>2</i><p><b>Suivre</b> <span>· attente suivie, relance prête à J+5</span></p></li>
-<li><i>3</i><p><b>Recevoir</b> <span>· attestation_msa.pdf reçue et rangée</span></p></li>
-<li><i>4</i><p><b>Contrôler</b> <span>· pièce conforme au besoin du dossier</span></p></li>
-<li><i>5</i><p><b>Reprendre</b> <span>· dossier complété, procédure relancée</span></p></li>
-<li class="last"><i>6</i><p><b>Constater</b> <span>· résultat vérifié, récap envoyé</span></p></li>
+<li><i>1</i><p><b>Détecter</b> <span>· règle repérée, 8 fermes éligibles</span></p></li>
+<li><i>2</i><p><b>Rassembler</b> <span>· factures GNR d’août tirées des mails</span></p></li>
+<li><i>3</i><p><b>Compléter</b> <span>· 1 facture manquante, relance à J+5</span></p></li>
+<li><i>4</i><p><b>Contrôler</b> <span>· litres = factures, IBAN au bon nom</span></p></li>
+<li><i>5</i><p><b>Déposer</b> <span>· Chorus Pro pré-rempli, validé</span></p></li>
+<li class="last"><i>6</i><p><b>Constater</b> <span>· accusé rangé, récap à l’exploitant</span></p></li>
 </ol>
 </div>
 <script>
-var S=[["En attente","wait","Exploitant"],["Relance prête","wait","Exploitant"],["Pièce reçue","","Secrétaire"],["Conforme","ok","Strajo"],["En cours","","Strajo"],["Terminé ✓","ok","—"]];
+var S=[["8 éligibles","ok","Strajo"],["Factures réunies","","Strajo"],["Relance prête","wait","Fournisseur"],["Conforme","ok","Secrétaire"],["Déposé","ok","DGFiP"],["Terminé ✓","ok","—"]];
 var L=document.querySelectorAll("li"),chip=document.getElementById("chip"),who=document.getElementById("who"),i=-1;
 function set(t,c,w){chip.textContent=t;chip.className="chip"+(c?" "+c:"");who.textContent=w}
 function paint(){for(var k=0;k<L.length;k++){var c=k===L.length-1?"last":"";if(k<=i)c+=" on";if(k===i)c+=" cur";L[k].className=c}}
-function tick(){i++;if(i>=L.length){i=-1;paint();set("À demander","","Secrétaire");setTimeout(tick,1400);return}paint();set(S[i][0],S[i][1],S[i][2]);setTimeout(tick,i===L.length-1?3800:1800)}
+function tick(){i++;if(i>=L.length){i=-1;paint();set("Nouvelle règle","","Strajo");setTimeout(tick,1400);return}paint();set(S[i][0],S[i][1],S[i][2]);setTimeout(tick,i===L.length-1?3800:1800)}
 setTimeout(tick,1000);
 </script>
 </x-embed>
 <div style="position:absolute;left:128px;right:128px;bottom:64px;display:flex;justify-content:space-between">
-<p style="font-size:24px;color:#4F5A52">Exemple illustratif — parcours de référence du MVP</p>
-<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">08</p>
+<p style="font-size:24px;color:#4F5A52">Exemple illustratif · règles réelles : FAQ Aide GNR agricole 2026, DGFiP, 20 juillet 2026</p>
+<p style="font-family:'JetBrains Mono', 'Courier New', monospace;font-size:24px;color:#4F5A52">06</p>
 </div>
-<aside>~25 s. Mails, courriers, logiciels, factures, relevés : tout est accessible, mais rien n’est relié à une procédure. Strajo rattache chaque élément à la démarche qu’il fait avancer. Exemple : un dossier PAC bloqué par une attestation MSA. Strajo prépare la demande, la secrétaire valide, il suit, relance, contrôle la pièce, et le dossier se clôt. L’IA agit sous contrôle, et chaque geste laisse une preuve.</aside>
+<aside>~45 s. Prenons un cas réel de cette année : l’aide GNR agricole. Deux décrets, des règles qui changent en cours de route, et un dépôt par mois livré : les livraisons d’août sont à déposer avant le 31 octobre, dans deux semaines. [démo] Strajo repère la règle et vérifie, ferme par ferme, qui est éligible : une exploitation en redressement est écartée. Il retrouve les factures de GNR dans les mails — les bons de livraison sont refusés —, prépare la relance pour la facture qui manque, additionne les litres, vérifie que l’IBAN est au nom de l’exploitation, et pré-remplit le dépôt sur Chorus Pro. La secrétaire valide ; chaque geste laisse une preuve. Sur le terrain, la moitié des secrétaires nous ont parlé de cette aide : l’une a raté les premières échéances faute d’information, une autre a passé un week-end à déposer pour tous ses clients. — Pour les questions : FAQ DGFiP du 20/07/2026, décrets n° 2026-334 et 2026-477 ; 3,86 c€/L en avril, 15 c€/L de mai à août ; dépôt d’août du 1er septembre au 31 octobre ; pas de procédure collective ; déclaration de minimis pour CUMA et ETA ; une seule demande par mois, doublons rejetés.</aside>
 </section>

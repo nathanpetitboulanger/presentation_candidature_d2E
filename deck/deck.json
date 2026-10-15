@@ -10,33 +10,33 @@
   "order": [
     "cover",
     "constat",
-    "complexite",
-    "cout",
+    "semaine",
     "strategie",
-    "marche",
     "solution",
     "procedure",
-    "veille",
     "difference",
     "modele",
     "porteur",
     "avancement",
-    "terrain",
     "roadmap",
     "d2e",
-    "merci"
+    "merci",
+    "complexite",
+    "veille",
+    "marche",
+    "terrain"
   ],
   "sections": {
     "s1": {
-      "description": "Contexte et problème : l’administratif agricole pèse, change sans cesse, et coûte cher qu’on se fasse aider ou non",
+      "description": "Contexte et problème : 9 h d’administratif par semaine, et une semaine type de secrétaire agricole mesurée sur 14 entretiens",
       "start": "cover"
     },
     "s2": {
-      "description": "Stratégie et marché : commencer par les secrétaires administratives, un marché émergent",
+      "description": "Cible et marché : commencer par les secrétaires agricoles, un métier qui se structure",
       "start": "strategie"
     },
     "s3": {
-      "description": "La solution : transformer le flou en clair, tout relier à une procédure, et en quoi on se différencie",
+      "description": "La solution : transformer le flou en clair, démo sur l’aide GNR agricole, et en quoi on se différencie",
       "start": "solution"
     },
     "s4": {
@@ -48,8 +48,12 @@
       "start": "porteur"
     },
     "s6": {
-      "description": "Nos attentes vis-à-vis du D2E",
+      "description": "Mes attentes vis-à-vis du D2E",
       "start": "d2e"
+    },
+    "s7": {
+      "description": "Annexes pour les questions : réglementations, veille, marché, terrain",
+      "start": "complexite"
     }
   },
   "faces": {
